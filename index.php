@@ -3,17 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
-    <title>PHP-hotel</title>
-</head>
-
-<body>
-
     <?php
-
     $hotels = [
+
         [
             'name' => 'Hotel Belvedere',
             'description' => 'Hotel Belvedere Descrizione',
@@ -49,35 +47,85 @@
             'vote' => 2,
             'distance_to_center' => 50
         ],
+
     ];
 
-    echo '<table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Parking</th>
-                    <th scope="col">Vote</th>
-                    <th scope="col">Distance</th>
-                </tr>
-            </thead>
-            <tbody>';
-    foreach ($hotels as $key => $hotel) {
+    $parking = $_GET['parking'];
+    echo "parking";
+    var_dump($parking);
 
-        echo '<tr>
-                <th scope="row">' . $hotel["name"] . '</th>'
-            . '<td>' . $hotel["description"] . '</td>'
-            . '<td>' . $hotel["parking"] . '</td>'
-            . '<td>' . $hotel["vote"] . '</td>'
-            . '<td>' . $hotel["distance_to_center"] . ' km' . '</td>'
-            . '</tr>';
-    };
+    echo "<br />";
 
-    echo '</tbody>'
-        .  '</table>';
+    $vote = $_GET['vote'] ?? -1;
+    echo "vote";
+    var_dump($vote);
+    ?>
+</head>
+
+<body>
+
+    <form>
+        <label for="Parcheggio">Parcheggio</label>
+        <br />
+        <input type="radio" id="parking_yes" name="parking" value="yes">
+        <label for="parking_yes">Yes</label>
+        <input type="radio" id="parking_no" name="parking" value="no">
+        <label for="parking_no">No</label>
+        <br>
+        <label for="vote">Vote</label>
+        <select name="vote" id="vote">
+            <option value="-1">SELEZIONA VOTO MINIMO</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <br>
+        <input type="submit" value="SEARCH">
+    </form>
+
+    <table border="1px">
+        <tr>
+            <th>NAME</th>
+            <th>DESCRIPTION</th>
+            <th>PARKING</th>
+            <th>VOTE</th>
+            <th>DISTANCE TO CENTER</th>
+        </tr>
+
+        <?php
+
+        foreach ($hotels as $hotel) {
+
+            if (($parking === null
+                    || ($parking === "yes" && $hotel['parking'])    // $hotel['parking'] === true
+                    || ($parking === "no" && !$hotel['parking']))
+                && $vote <= $hotel['vote']
+            ) { // $hotel['parking'] === false
+
+                echo '<tr>';
+                echo '<td>' . $hotel['name'] . '</td>';
+                echo '<td>' . $hotel['description'] . '</td>';
+                echo '<td>' . ($hotel['parking'] ? "yes" : "no") . '</td>';
+                echo '<td>' . $hotel['vote'] . '/5</td>';
+                echo '<td>' . $hotel['distance_to_center'] . 'Km</td>';
+                echo '</tr>';
+            }
+        }
+        ?>
+    </table>
+
+    <?php
+
+    // foreach ($hotels as $hotel) {
+
+    //     echo $hotel['name'] . ' - ' .
+    //          $hotel['description'];
+    //     echo "<br />";
+    // }        
 
     ?>
 </body>
-
 
 </html>
